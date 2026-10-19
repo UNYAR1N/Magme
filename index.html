@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#09090b">
 <title>MagMe - Magma Board</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,31 +12,26 @@
 
 <style>
 :root {
-    /* Premium Dark Palette */
+    /* Deep OLED Dark Mode */
     --bg-base: #09090b;
-    --bg-gradient: radial-gradient(circle at 50% 0%, #1a1a24 0%, #09090b 70%);
+    --bg-surface: rgba(255, 255, 255, 0.03);
+    --bg-surface-hover: rgba(255, 255, 255, 0.06);
     
-    /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.03);
+    /* Glassmorphism 2.0 Borders */
     --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-hover-bg: rgba(255, 255, 255, 0.06);
-    --glass-hover-border: rgba(255, 255, 255, 0.15);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-    --glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    --glass-border-highlight: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.08);
 
-    /* Text */
+    /* Typography */
     --text-primary: #f8f8f8;
     --text-secondary: #a1a1aa;
     --text-muted: #52525b;
-
-    /* Accent */
     --accent: #ffffff;
-    --accent-glow: 0 0 20px rgba(255, 255, 255, 0.15);
 
     /* Layout */
-    --radius-sm: 8px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
+    --radius-sm: 10px;
+    --radius-md: 18px;
+    --radius-lg: 28px;
     --font: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -46,7 +41,6 @@ html { -webkit-text-size-adjust: 100%; }
 body {
     font-family: var(--font);
     background-color: var(--bg-base);
-    background-image: var(--bg-gradient);
     color: var(--text-primary);
     min-height: 100dvh;
     display: flex;
@@ -58,37 +52,97 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    perspective: 1200px; /* For 3D tilt effect */
 }
 
-/* Background Ambient Glow */
-body::before {
-    content: '';
+/* =========================================
+   Ambient Animated Mesh Background
+   ========================================= */
+.bg-mesh {
     position: fixed;
-    top: -10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-    height: 50vh;
-    background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+    inset: 0;
     z-index: -1;
+    overflow: hidden;
     pointer-events: none;
+    background: var(--bg-base);
 }
 
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 20s ease-in-out infinite alternate;
+}
+
+.blob-1 {
+    background: radial-gradient(circle, rgba(120, 119, 198, 0.15) 0%, transparent 70%);
+    width: 60vw;
+    height: 60vw;
+    max-width: 600px;
+    max-height: 600px;
+    top: -10%;
+    left: -10%;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
+    width: 50vw;
+    height: 50vw;
+    max-width: 500px;
+    max-height: 500px;
+    bottom: -10%;
+    right: -10%;
+    animation-delay: -5s;
+}
+
+.blob-3 {
+    background: radial-gradient(circle, rgba(192, 132, 252, 0.08) 0%, transparent 70%);
+    width: 40vw;
+    height: 40vw;
+    max-width: 400px;
+    max-height: 400px;
+    top: 40%;
+    left: 30%;
+    animation-delay: -10s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
+}
+
+/* =========================================
+   Container & Staggered Entrance
+   ========================================= */
 .container {
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     gap: 32px;
-    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    z-index: 1;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+.animate-entrance {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.header { animation-delay: 0.1s; }
+.card { animation-delay: 0.2s; }
+.footer { animation-delay: 0.3s; }
+
+@keyframes slideUp {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Language Switch */
+/* =========================================
+   Language Switch
+   ========================================= */
 .lang-switch {
     position: fixed;
     top: max(20px, env(safe-area-inset-top));
@@ -96,13 +150,13 @@ body::before {
     display: flex;
     gap: 4px;
     padding: 4px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
     z-index: 100;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .lang-btn {
@@ -116,20 +170,19 @@ body::before {
     font-weight: 600;
     letter-spacing: 0.5px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.lang-btn:hover {
-    color: var(--text-primary);
-}
-
+.lang-btn:hover { color: var(--text-primary); }
 .lang-btn.active {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     color: var(--text-primary);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* Header */
+/* =========================================
+   Header & Logo
+   ========================================= */
 .header {
     text-align: center;
     display: flex;
@@ -144,7 +197,7 @@ body::before {
 }
 
 .logo {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
     letter-spacing: -0.5px;
     color: var(--text-primary);
@@ -157,50 +210,92 @@ body::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     background: rgba(255, 255, 255, 0.15);
-    filter: blur(20px);
+    filter: blur(24px);
     border-radius: 50%;
     z-index: 1;
+    animation: pulseGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.8; }
 }
 
 .tagline {
     font-size: 12px;
     color: var(--text-secondary);
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     font-weight: 500;
 }
 
-/* Premium Glass Card */
+/* =========================================
+   Glassmorphism Card + 3D Tilt + Glow
+   ========================================= */
+.card-wrapper {
+    /* Wrapper handles the 3D tilt to keep content crisp */
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
 .card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: var(--bg-surface);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
     padding: 32px 24px;
     box-shadow: var(--glass-shadow);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* Contains the glow */
+    transform-style: preserve-3d;
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-.card:hover {
-    background: var(--glass-hover-bg);
-    border-color: var(--glass-hover-border);
-    box-shadow: var(--glass-shadow-hover);
-    transform: translateY(-4px);
-}
-
-/* Subtle top highlight */
+/* Dynamic Cursor Glow */
 .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 255, 255, 0.06),
+        transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Top Glass Highlight */
+.card::after {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    z-index: 1;
+}
+
+.card-wrapper:hover .card {
+    background: var(--bg-surface-hover);
+    border-color: var(--glass-border-highlight);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.card-wrapper:hover .card::before {
+    opacity: 1;
+}
+
+/* Content inside card needs to pop forward in 3D space */
+.card-content {
+    position: relative;
+    z-index: 2;
+    transform: translateZ(30px); /* Pushes content above the card surface */
 }
 
 .card-title {
@@ -208,7 +303,6 @@ body::before {
     font-weight: 600;
     letter-spacing: -0.3px;
     margin-bottom: 8px;
-    color: var(--text-primary);
 }
 
 .card-desc {
@@ -218,10 +312,10 @@ body::before {
     line-height: 1.6;
 }
 
-/* Field */
-.field {
-    margin-bottom: 24px;
-}
+/* =========================================
+   Field & Input
+   ========================================= */
+.field { margin-bottom: 24px; }
 
 .field-label {
     font-size: 11px;
@@ -234,7 +328,7 @@ body::before {
 }
 
 .field-value {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
     padding: 16px;
@@ -245,7 +339,13 @@ body::before {
     min-height: 52px;
     display: flex;
     align-items: center;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.field-value:not(.skeleton):not(.empty):hover {
+    border-color: rgba(255,255,255,0.15);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 12px rgba(255,255,255,0.03);
 }
 
 .field-value.empty {
@@ -255,7 +355,7 @@ body::before {
 
 .field-value.skeleton {
     color: transparent;
-    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 100%);
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.02) 100%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
     border-color: transparent;
@@ -266,7 +366,9 @@ body::before {
     100% { background-position: -200% 0; }
 }
 
-/* Premium Button */
+/* =========================================
+   Premium Button with Liquid Shine
+   ========================================= */
 .btn {
     display: flex;
     align-items: center;
@@ -282,29 +384,40 @@ body::before {
     font-weight: 600;
     letter-spacing: 0.5px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     min-height: 54px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
+    transform-style: preserve-3d;
 }
 
-.btn::after {
+/* Liquid Shine Effect */
+.btn::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
 }
 
 .btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255,255,255,0.2) inset, var(--accent-glow);
+    transform: translateY(-2px) translateZ(10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255,255,255,0.2) inset, 0 0 30px rgba(255,255,255,0.1);
 }
 
-.btn:hover:not(:disabled)::after {
-    opacity: 1;
+.btn:hover:not(:disabled)::before {
+    left: 200%;
+    transition: left 0.6s ease;
 }
 
 .btn:active:not(:disabled) {
@@ -318,7 +431,9 @@ body::before {
     box-shadow: none;
 }
 
-/* Status */
+/* =========================================
+   Status & Footer
+   ========================================= */
 .status {
     margin-top: 16px;
     padding: 12px 16px;
@@ -335,9 +450,14 @@ body::before {
     background: rgba(255, 60, 60, 0.1);
     border: 1px solid rgba(255, 60, 60, 0.2);
     color: #ff8888;
+    box-shadow: 0 4px 12px rgba(255, 60, 60, 0.1);
 }
 
-/* Footer */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .footer {
     text-align: center;
     font-size: 11px;
@@ -346,14 +466,44 @@ body::before {
     padding-bottom: 8px;
 }
 
+/* =========================================
+   Responsive & Accessibility
+   ========================================= */
 @media (min-width: 768px) {
     .lang-switch { top: 32px; right: 32px; }
-    .container { max-width: 400px; }
+    .container { max-width: 420px; }
     .card { padding: 36px 32px; }
+}
+
+/* Disable 3D Tilt on Touch Devices (Mobile) */
+@media (hover: none) {
+    .card-wrapper { transform: none !important; }
+    .card-content { transform: none !important; }
+    .card-wrapper:hover .card { transform: none; }
+    .btn { transform: none !important; }
+    .btn::before { display: none; }
+}
+
+/* Respect Prefers-Reduced-Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .animate-entrance { opacity: 1; transform: none; }
 }
 </style>
 </head>
 <body>
+
+<!-- Ambient Animated Mesh Background -->
+<div class="bg-mesh">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+</div>
 
 <div class="lang-switch" role="group" aria-label="Language">
     <button class="lang-btn" data-lang="en" type="button">EN</button>
@@ -361,7 +511,7 @@ body::before {
 </div>
 
 <div class="container">
-    <header class="header">
+    <header class="header animate-entrance">
         <div class="logo-wrapper">
             <div class="logo-glow"></div>
             <div class="logo">MagMe</div>
@@ -369,24 +519,29 @@ body::before {
         <p class="tagline" data-i18n="tagline">Magma Board</p>
     </header>
 
-    <main class="card">
-        <h1 class="card-title" data-i18n="title">Magma Board</h1>
-        <p class="card-desc" data-i18n="desc">Join the board to share ideas and connect with the community.</p>
+    <!-- Card Wrapper for 3D Tilt (Separated to keep text crisp) -->
+    <div class="card-wrapper animate-entrance">
+        <main class="card" id="tiltCard">
+            <div class="card-content">
+                <h1 class="card-title" data-i18n="title">Magma Board</h1>
+                <p class="card-desc" data-i18n="desc">Join the board to share ideas and connect with the community.</p>
 
-        <div class="field">
-            <span class="field-label" data-i18n="linkLabel">Board Link</span>
-            <div id="linkUrl" class="field-value skeleton" data-i18n="loading">Loading...</div>
-        </div>
+                <div class="field">
+                    <span class="field-label" data-i18n="linkLabel">Board Link</span>
+                    <div id="linkUrl" class="field-value skeleton" data-i18n="loading">Loading...</div>
+                </div>
 
-        <button id="joinBtn" class="btn" disabled>
-            <span data-i18n="loading">Loading...</span>
-        </button>
+                <button id="joinBtn" class="btn" disabled>
+                    <span data-i18n="loading">Loading...</span>
+                </button>
 
-        <div id="statusMsg" class="status" role="alert"></div>
-    </main>
+                <div id="statusMsg" class="status" role="alert"></div>
+            </div>
+        </main>
+    </div>
 
-    <footer class="footer">
-        <p>2026 MagMe</p>
+    <footer class="footer animate-entrance">
+        <p>2026 IMC72S</p>
     </footer>
 </div>
 
@@ -446,6 +601,8 @@ let linkState = "loading";
 const linkUrlEl = document.getElementById("linkUrl");
 const joinBtn = document.getElementById("joinBtn");
 const statusMsg = document.getElementById("statusMsg");
+const tiltCard = document.getElementById("tiltCard");
+const cardWrapper = document.querySelector(".card-wrapper");
 
 function applyLang(lang) {
     currentLang = lang;
@@ -504,6 +661,40 @@ joinBtn.addEventListener("click", () => {
     }
 });
 
+// ==========================================
+// Interactive Micro-Interactions (Mouse Track)
+// ==========================================
+if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    // 1. Dynamic Glow Tracking
+    tiltCard.addEventListener("mousemove", (e) => {
+        const rect = tiltCard.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Set CSS vars for glow position
+        tiltCard.style.setProperty("--mouse-x", `${x}px`);
+        tiltCard.style.setProperty("--mouse-y", `${y}px`);
+
+        // 2. 3D Tilt Effect
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -6; // Max 6 deg
+        const rotateY = ((x - centerX) / centerX) * 6;  // Max 6 deg
+
+        cardWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+
+    // Reset on Mouse Leave
+    tiltCard.addEventListener("mouseleave", () => {
+        cardWrapper.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        tiltCard.style.setProperty("--mouse-x", `50%`);
+        tiltCard.style.setProperty("--mouse-y", `50%`);
+    });
+}
+
+// ==========================================
+// Firebase Realtime Database Listener
+// ==========================================
 const boardRef = ref(db, "settings/board");
 onValue(boardRef,
     (snapshot) => {
