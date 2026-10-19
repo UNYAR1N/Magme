@@ -46,13 +46,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+    padding: max(32px, env(safe-area-inset-top)) 20px max(32px, env(safe-area-inset-bottom));
     line-height: 1.5;
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    perspective: 1200px; /* For 3D tilt effect */
+    perspective: 1200px;
 }
 
 /* =========================================
@@ -77,34 +77,22 @@ body {
 
 .blob-1 {
     background: radial-gradient(circle, rgba(120, 119, 198, 0.15) 0%, transparent 70%);
-    width: 60vw;
-    height: 60vw;
-    max-width: 600px;
-    max-height: 600px;
-    top: -10%;
-    left: -10%;
+    width: 60vw; height: 60vw; max-width: 600px; max-height: 600px;
+    top: -10%; left: -10%;
     animation-delay: 0s;
 }
 
 .blob-2 {
     background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
-    width: 50vw;
-    height: 50vw;
-    max-width: 500px;
-    max-height: 500px;
-    bottom: -10%;
-    right: -10%;
+    width: 50vw; height: 50vw; max-width: 500px; max-height: 500px;
+    bottom: -10%; right: -10%;
     animation-delay: -5s;
 }
 
 .blob-3 {
     background: radial-gradient(circle, rgba(192, 132, 252, 0.08) 0%, transparent 70%);
-    width: 40vw;
-    height: 40vw;
-    max-width: 400px;
-    max-height: 400px;
-    top: 40%;
-    left: 30%;
+    width: 40vw; height: 40vw; max-width: 400px; max-height: 400px;
+    top: 40%; left: 30%;
     animation-delay: -10s;
 }
 
@@ -121,7 +109,7 @@ body {
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px; /* ลดช่องว่างลงเล็กน้อยเพื่อให้สองการ์ดดูเป็นกลุ่มก้อน */
     position: relative;
     z-index: 1;
 }
@@ -133,8 +121,9 @@ body {
 }
 
 .header { animation-delay: 0.1s; }
-.card { animation-delay: 0.2s; }
-.footer { animation-delay: 0.3s; }
+.card-wrapper { animation-delay: 0.2s; }
+.secondary-wrapper { animation-delay: 0.35s; }
+.footer { animation-delay: 0.45s; }
 
 @keyframes slideUp {
     to { opacity: 1; transform: translateY(0); }
@@ -191,11 +180,7 @@ body {
     gap: 8px;
 }
 
-.logo-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
+.logo-wrapper { position: relative; display: inline-block; }
 .logo {
     font-size: 28px;
     font-weight: 700;
@@ -204,14 +189,11 @@ body {
     position: relative;
     z-index: 2;
 }
-
 .logo-glow {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
+    width: 80px; height: 80px;
     background: rgba(255, 255, 255, 0.15);
     filter: blur(24px);
     border-radius: 50%;
@@ -233,10 +215,9 @@ body {
 }
 
 /* =========================================
-   Glassmorphism Card + 3D Tilt + Glow
+   Main Card (Glassmorphism + 3D Tilt)
    ========================================= */
 .card-wrapper {
-    /* Wrapper handles the 3D tilt to keep content crisp */
     transform-style: preserve-3d;
     transition: transform 0.1s ease-out;
 }
@@ -250,12 +231,11 @@ body {
     padding: 32px 24px;
     box-shadow: var(--glass-shadow);
     position: relative;
-    overflow: hidden; /* Contains the glow */
+    overflow: hidden;
     transform-style: preserve-3d;
     transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* Dynamic Cursor Glow */
 .card::before {
     content: '';
     position: absolute;
@@ -271,7 +251,6 @@ body {
     pointer-events: none;
 }
 
-/* Top Glass Highlight */
 .card::after {
     content: '';
     position: absolute;
@@ -286,16 +265,12 @@ body {
     border-color: var(--glass-border-highlight);
     box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
+.card-wrapper:hover .card::before { opacity: 1; }
 
-.card-wrapper:hover .card::before {
-    opacity: 1;
-}
-
-/* Content inside card needs to pop forward in 3D space */
 .card-content {
     position: relative;
     z-index: 2;
-    transform: translateZ(30px); /* Pushes content above the card surface */
+    transform: translateZ(30px);
 }
 
 .card-title {
@@ -348,10 +323,7 @@ body {
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 12px rgba(255,255,255,0.03);
 }
 
-.field-value.empty {
-    color: var(--text-muted);
-    font-style: italic;
-}
+.field-value.empty { color: var(--text-muted); font-style: italic; }
 
 .field-value.skeleton {
     color: transparent;
@@ -367,9 +339,9 @@ body {
 }
 
 /* =========================================
-   Premium Button with Liquid Shine
+   Buttons (Primary & Secondary)
    ========================================= */
-.btn {
+.btn-primary {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -392,43 +364,128 @@ body {
     transform-style: preserve-3d;
 }
 
-/* Liquid Shine Effect */
-.btn::before {
+.btn-primary::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        transparent
-    );
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
     transform: skewX(-20deg);
     transition: left 0.6s ease;
 }
 
-.btn:hover:not(:disabled) {
+.btn-primary:hover:not(:disabled) {
     transform: translateY(-2px) translateZ(10px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255,255,255,0.2) inset, 0 0 30px rgba(255,255,255,0.1);
 }
 
-.btn:hover:not(:disabled)::before {
-    left: 200%;
-    transition: left 0.6s ease;
-}
-
-.btn:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
-}
-
-.btn:disabled {
+.btn-primary:hover:not(:disabled)::before { left: 200%; }
+.btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+.btn-primary:disabled {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-muted);
     cursor: not-allowed;
     box-shadow: none;
+}
+
+/* Secondary Section Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--glass-border);
+}
+.divider span { padding: 0 16px; }
+
+/* Secondary Card & Button */
+.secondary-wrapper {
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+.secondary-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.05) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 12px 24px -10px rgba(0,0,0,0.5);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.secondary-wrapper:hover .secondary-card {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+
+.secondary-content {
+    transform: translateZ(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.secondary-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.secondary-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid var(--glass-border-highlight);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.btn-secondary svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+}
+
+.btn-secondary:hover svg {
+    transform: translate(2px, -2px); /* ลูกศรขยับเวลา hover */
 }
 
 /* =========================================
@@ -445,7 +502,6 @@ body {
 }
 
 .status.show { display: block; }
-
 .status.error {
     background: rgba(255, 60, 60, 0.1);
     border: 1px solid rgba(255, 60, 60, 0.2);
@@ -463,7 +519,6 @@ body {
     font-size: 11px;
     color: var(--text-muted);
     letter-spacing: 0.5px;
-    padding-bottom: 8px;
 }
 
 /* =========================================
@@ -471,20 +526,20 @@ body {
    ========================================= */
 @media (min-width: 768px) {
     .lang-switch { top: 32px; right: 32px; }
-    .container { max-width: 420px; }
+    .container { max-width: 440px; }
     .card { padding: 36px 32px; }
+    .secondary-card { padding: 28px; }
 }
 
-/* Disable 3D Tilt on Touch Devices (Mobile) */
 @media (hover: none) {
-    .card-wrapper { transform: none !important; }
-    .card-content { transform: none !important; }
-    .card-wrapper:hover .card { transform: none; }
-    .btn { transform: none !important; }
-    .btn::before { display: none; }
+    .card-wrapper, .secondary-wrapper { transform: none !important; }
+    .card-content, .secondary-content { transform: none !important; }
+    .btn-primary { transform: none !important; }
+    .btn-primary::before { display: none; }
+    .btn-primary:hover { transform: none !important; }
+    .btn-secondary:hover { transform: none !important; }
 }
 
-/* Respect Prefers-Reduced-Motion */
 @media (prefers-reduced-motion: reduce) {
     *, ::before, ::after {
         animation-duration: 0.01ms !important;
@@ -519,7 +574,7 @@ body {
         <p class="tagline" data-i18n="tagline">Magma Board</p>
     </header>
 
-    <!-- Card Wrapper for 3D Tilt (Separated to keep text crisp) -->
+    <!-- Main Card -->
     <div class="card-wrapper animate-entrance">
         <main class="card" id="tiltCard">
             <div class="card-content">
@@ -531,7 +586,7 @@ body {
                     <div id="linkUrl" class="field-value skeleton" data-i18n="loading">Loading...</div>
                 </div>
 
-                <button id="joinBtn" class="btn" disabled>
+                <button id="joinBtn" class="btn-primary" disabled>
                     <span data-i18n="loading">Loading...</span>
                 </button>
 
@@ -540,8 +595,29 @@ body {
         </main>
     </div>
 
+    <!-- Divider -->
+    <div class="divider animate-entrance" style="animation-delay: 0.3s;">
+        <span data-i18n="or">OR</span>
+    </div>
+
+    <!-- Secondary Section (Choose Board By Yourself) -->
+    <div class="secondary-wrapper animate-entrance">
+        <div class="secondary-card" id="tiltSecondary">
+            <div class="secondary-content">
+                <h2 class="secondary-title" data-i18n="chooseTitle">Choose Board by Yourself</h2>
+                <p class="secondary-desc" data-i18n="chooseDesc">Skip the main board and open the custom link directly.</p>
+                <a href="https://magma.com/d/a6vD1H3loh" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                    <span data-i18n="chooseBtn">Open Custom Board</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer animate-entrance">
-        <p>2026 IMC72S</p>
+        <p>2026 MagMe</p>
     </footer>
 </div>
 
@@ -578,7 +654,11 @@ const I18N = {
         waiting: "รอการอัปเดต",
         noLink: "ยังไม่มีลิงก์ กรุณารอการอัปเดต",
         loadError: "ไม่สามารถโหลดลิงก์ได้",
-        error: "เกิดข้อผิดพลาด กรุณาลองใหม่ภายหลัง"
+        error: "เกิดข้อผิดพลาด กรุณาลองใหม่ภายหลัง",
+        or: "หรือ",
+        chooseTitle: "เลือกบอร์ดด้วยตัวเอง",
+        chooseDesc: "ข้ามบอร์ดหลัก และเปิดลิงก์ที่คุณต้องการได้ทันที",
+        chooseBtn: "เปิดบอร์ดที่กำหนดเอง"
     },
     en: {
         tagline: "Magma Board",
@@ -590,7 +670,11 @@ const I18N = {
         waiting: "Waiting for update",
         noLink: "No link available yet. Please wait for an update.",
         loadError: "Unable to load link",
-        error: "Something went wrong. Please try again later."
+        error: "Something went wrong. Please try again later.",
+        or: "OR",
+        chooseTitle: "Choose Board by Yourself",
+        chooseDesc: "Skip the main board and open the custom link directly.",
+        chooseBtn: "Open Custom Board"
     }
 };
 
@@ -602,7 +686,9 @@ const linkUrlEl = document.getElementById("linkUrl");
 const joinBtn = document.getElementById("joinBtn");
 const statusMsg = document.getElementById("statusMsg");
 const tiltCard = document.getElementById("tiltCard");
+const tiltSecondary = document.getElementById("tiltSecondary");
 const cardWrapper = document.querySelector(".card-wrapper");
+const secondaryWrapper = document.querySelector(".secondary-wrapper");
 
 function applyLang(lang) {
     currentLang = lang;
@@ -662,33 +748,48 @@ joinBtn.addEventListener("click", () => {
 });
 
 // ==========================================
-// Interactive Micro-Interactions (Mouse Track)
+// Interactive Micro-Interactions
 // ==========================================
 if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-    // 1. Dynamic Glow Tracking
+    // 1. Main Card 3D Tilt & Glow
     tiltCard.addEventListener("mousemove", (e) => {
         const rect = tiltCard.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        // Set CSS vars for glow position
         tiltCard.style.setProperty("--mouse-x", `${x}px`);
         tiltCard.style.setProperty("--mouse-y", `${y}px`);
 
-        // 2. 3D Tilt Effect
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -6; // Max 6 deg
-        const rotateY = ((x - centerX) / centerX) * 6;  // Max 6 deg
+        const rotateX = ((y - centerY) / centerY) * -6;
+        const rotateY = ((x - centerX) / centerX) * 6;
 
         cardWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     });
 
-    // Reset on Mouse Leave
     tiltCard.addEventListener("mouseleave", () => {
         cardWrapper.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
         tiltCard.style.setProperty("--mouse-x", `50%`);
         tiltCard.style.setProperty("--mouse-y", `50%`);
+    });
+
+    // 2. Secondary Card 3D Tilt (ลดความรุนแรงลงเพื่อให้ Subtle)
+    tiltSecondary.addEventListener("mousemove", (e) => {
+        const rect = tiltSecondary.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -4;
+        const rotateY = ((x - centerX) / centerX) * 4;
+
+        secondaryWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+    });
+
+    tiltSecondary.addEventListener("mouseleave", () => {
+        secondaryWrapper.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
     });
 }
 
